@@ -41,21 +41,27 @@ with open(input_file_name, 'r') as file:
 		file_object.write("\n")
 		excel_row = []
 		if extract_info == True:
+			origin_data = ''
+			orgName_data = ''
 			excel_row.insert(0,line.rstrip())
 			for ln in result.text.splitlines():
 				if re.search('origin', ln):
 					origin = ln.split()
-					excel_row.insert(1,' '.join(origin[1:]))
-					#print(origin[1])
+					origin_data = ' '.join(origin[1:])
+
 				if re.search('OrgName', ln):
 					orgName = ln.split()
-					excel_row.insert(2,' '.join(orgName[1:]))
-					#print(orgName[1])
+					orgName_data = ' '.join(orgName[1:])
+
+			excel_row.insert(1,origin_data)
+			excel_row.insert(2,orgName_data)
 			excel_data.append(excel_row)
 				
 		line = file.readline()
 #print(excel_data)
-df = pd.DataFrame(excel_data,columns=['Input', 'ASN', 'Oranisation Name'])
-df.to_excel(output_file_name+ '.xlsx')
+if extract_info == True:
+	df = pd.DataFrame(excel_data,columns=['Input', 'ASN', 'Oranisation Name'])
+	df.to_excel(output_file_name+ '.xlsx')
+
 print('end')
 file_object.close()
